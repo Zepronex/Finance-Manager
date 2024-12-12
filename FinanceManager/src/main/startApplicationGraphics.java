@@ -8,111 +8,191 @@ import java.util.Date;
 
 class startApplicationGraphics extends JFrame {
 
-	// input fields
-	//private JTextField idTextField;
-	private JTextField amountTextField;
-	//private JTextField dateTextField;
-	private JTextField categoryTextField;
-	private JTextField descriptionTextField;
-	private JTextField typeTextField;
+    // Input fields
+    private JTextField amountTextField;
+    private JTextField categoryTextField;
+    private JTextField descriptionTextField;
+    private JTextField typeTextField;
 
-	private JButton sendUserInputData; // button to insert data
+    private JTextArea displayText; // Area to display transaction info
+    private JButton sendUserInputData; // Button to insert data
 
-	public startApplicationGraphics() {
-		super("Personal Finance Manager"); // title in application window
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public startApplicationGraphics() {
+        super("Personal Finance Manager"); // Title in the application window
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
 
-		initializeComponents();
-	}
+    public void createAndShowGui() {
+        // Create tabs
+        JTabbedPane tabbedPane = new JTabbedPane();
 
-	private void initializeComponents() {
+        // Add tabs
+        tabbedPane.addTab("Stock Prices", createStockPricesTab());
+        tabbedPane.addTab("Calculator", createCalculatorTab());
+        tabbedPane.addTab("Income/Expenses", createIncomeExpensesTab());
 
-		// Create components
-		//idTextField = new JTextField(20);
-		amountTextField = new JTextField(20);
-		//dateTextField = new JTextField(20);
-		categoryTextField = new JTextField(20);
-		descriptionTextField = new JTextField(20);
-		typeTextField = new JTextField(20);
-		sendUserInputData = new JButton("Send Data");
+        // Add tabbed pane to frame
+        add(tabbedPane);
 
-		// Input panel with
-		JPanel inputPanel = new JPanel();
-		inputPanel.setBorder(BorderFactory.createTitledBorder("Enter data"));
-		inputPanel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
+        setSize(800, 600);
+        setLocationRelativeTo(null); // Center the window
+        setVisible(true);
+    }
 
-		gbc.insets = new Insets(10, 10, 10, 10); // Add padding between components
+    private JPanel createStockPricesTab() {
+        JPanel panel = new JPanel(new BorderLayout());
 
-		
-		// place input fields in gui
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		inputPanel.add(new JLabel("Amount: "), gbc);
+        JLabel label = new JLabel("Stock Prices", SwingConstants.CENTER);
+        panel.add(label, BorderLayout.NORTH);
 
-		gbc.gridx = 2;
-		gbc.gridy = 0;
-		inputPanel.add(amountTextField, gbc);
+        // Components for stock price input
+        JTextField stockInput = new JTextField("Enter stock symbol...");
+        JButton fetchButton = new JButton("Fetch Prices");
+        JTextArea stockDisplay = new JTextArea(10, 30);
+        stockDisplay.setEditable(false);
 
-		gbc.gridx = 4;
-		gbc.gridy = 0;
-		inputPanel.add(new JLabel("Category: "), gbc);
-		
-		gbc.gridx = 6;
-		gbc.gridy = 0;
-		inputPanel.add(categoryTextField, gbc);
-		
-		gbc.gridx = 8;
-		gbc.gridy = 0;
-		inputPanel.add(new JLabel("Description: "), gbc);
-		
-		gbc.gridx = 10;
-		gbc.gridy = 0;
-		inputPanel.add(descriptionTextField, gbc);
-		
-		gbc.gridx = 12;
-		gbc.gridy = 0;
-		inputPanel.add(new JLabel("Type"), gbc);
-		
-		gbc.gridx = 14;
-		gbc.gridy = 0;
-		inputPanel.add(typeTextField, gbc);
+        // Add components
+        panel.add(stockInput, BorderLayout.CENTER);
+        panel.add(fetchButton, BorderLayout.SOUTH);
 
-		// Result area with titled border and adjusted font
-		resultTextArea = new JTextArea(10, 30);
-		resultTextArea.setEditable(false); // Make result area read-only
-		resultTextArea.setFont(new Font("Serif", Font.PLAIN, 14));
-		JScrollPane scrollPane = new JScrollPane(resultTextArea);
-		scrollPane.setBorder(BorderFactory.createTitledBorder("Weather Data"));
+        // Action listener for fetching stock data
+        fetchButton.addActionListener(e -> {
+            String stockSymbol = stockInput.getText();
+            stockDisplay.setText("Fetching data for: " + stockSymbol + "\n(Not yet implemented)");
+        });
 
-		// Add action listener to the button
-		getWeatherButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String city = cityTextField.getText();
-				if (city == null || city.trim().isEmpty()) {
-					// Show error message if city name is empty
-					JOptionPane.showMessageDialog(WeatherAppGUI.this, "Please enter a city name.");
-					return;
-				}
+        panel.add(new JScrollPane(stockDisplay), BorderLayout.EAST);
+        return panel;
+    }
 
-				// Fetch and display weather data for the entered city
-				fetchAndDisplayWeatherData(city);
-			}
-		});
+    private JPanel createCalculatorTab() {
+        JPanel panel = new JPanel(new GridLayout(4, 4));
 
-		// Set layout manager for the frame and add components
-		getContentPane().setLayout(new BorderLayout(10, 10));
-		getContentPane().add(inputPanel, BorderLayout.NORTH);
-		getContentPane().add(scrollPane, BorderLayout.CENTER);
-	}
+        // Add buttons for calculator functionality
+        JTextField display = new JTextField();
+        display.setEditable(false);
+        panel.add(display);
 
-	public void createAndShowGui() {
+        String[] buttons = {"7", "8", "9", "/", "4", "5", "6", "*", "1", "2", "3", "-", "0", "C", "=", "+"};
+        for (String text : buttons) {
+            JButton button = new JButton(text);
+            panel.add(button);
 
-	}
+            // Add action listeners (logic to be implemented later)
+            button.addActionListener(e -> {
+                display.setText(display.getText() + text);
+            });
+        }
 
+        return panel;
+    }
+
+    private JPanel createIncomeExpensesTab() {
+        JPanel inputPanel = new JPanel();
+        inputPanel.setBorder(BorderFactory.createTitledBorder("Enter Data"));
+        inputPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Add padding between components
+
+        // Add input fields
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        inputPanel.add(new JLabel("Amount: "), gbc);
+        amountTextField = new JTextField(20);
+        gbc.gridx = 1;
+        inputPanel.add(amountTextField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        inputPanel.add(new JLabel("Category: "), gbc);
+        categoryTextField = new JTextField(20);
+        gbc.gridx = 1;
+        inputPanel.add(categoryTextField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        inputPanel.add(new JLabel("Description: "), gbc);
+        descriptionTextField = new JTextField(20);
+        gbc.gridx = 1;
+        inputPanel.add(descriptionTextField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        inputPanel.add(new JLabel("Type (Income/Expense): "), gbc);
+        typeTextField = new JTextField(20);
+        gbc.gridx = 1;
+        inputPanel.add(typeTextField, gbc);
+
+        // Button to add data
+        sendUserInputData = new JButton("Send Data");
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        inputPanel.add(sendUserInputData, gbc);
+
+        // Display area
+        displayText = new JTextArea(10, 30);
+        displayText.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(displayText);
+        scrollPane.setBorder(BorderFactory.createTitledBorder("Transaction History"));
+
+        // Add action listener for the button
+        sendUserInputData.addActionListener(e -> {
+            try {
+                double amount = Double.parseDouble(amountTextField.getText());
+                String category = categoryTextField.getText();
+                String description = descriptionTextField.getText();
+                String type = typeTextField.getText();
+
+                if (category.isEmpty() || description.isEmpty() || type.isEmpty()) {
+                    JOptionPane.showMessageDialog(
+                        startApplicationGraphics.this,
+                        "Please fill in all fields.",
+                        "Input Error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                    return;
+                }
+
+                // Create a new transaction
+                Transaction transaction = new Transaction(0, amount, new Date(), category, description, type);
+
+                // Append transaction to the display area
+                displayText.append(transaction.toString() + "\n");
+
+                // Clear input fields
+                amountTextField.setText("");
+                categoryTextField.setText("");
+                descriptionTextField.setText("");
+                typeTextField.setText("");
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(
+                    startApplicationGraphics.this,
+                    "Invalid amount. Please enter a numeric value.",
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
+
+        // Combine input panel and scroll pane
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(inputPanel, BorderLayout.NORTH);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        return panel;
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            startApplicationGraphics app = new startApplicationGraphics();
+            app.createAndShowGui();
+        });
+    }
 }
